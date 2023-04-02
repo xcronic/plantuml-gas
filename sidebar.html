@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <h3>PlantUML xcronic</h3>
+    <textarea id="plantuml-script" placeholder="Enter PlantUML script" rows="10" cols="30" width="300" oninput="handleInputChanged()"></textarea>
+    <br />
+    <input id="insertDiagramButton" class="button-30" type="button" value="Insert Diagram" onclick="insertDiagram()" disabled/>
+    <input id="editSelectedButton" class="button-30" type="button" value="Edit Selected" onclick="editSelected()"/>
+
+    <br />
+    <img id="plantuml-diagram" style="max-width:100%;" />
+
+    <script>
+      let timeout = null;
+
+      function handleInputChanged() {
+        if (timeout) {
+          clearTimeout(timeout);
+        }
+        timeout = setTimeout(generateDiagram, 1000);
+      }
+
+      // function updateDiagram(diagramUrl) {
+      //   document.getElementById('plantuml-diagram').src = diagramUrl;
+      // }
+
+      function displayDiagram(imgSrc) {
+        document.getElementById('plantuml-diagram').src = imgSrc;
+        document.getElementById('insertDiagramButton').disabled = false;
+      }
+
+      function generateDiagram() {
+        const plantUMLScript = document.getElementById('plantuml-script').value;
+        google.script.run
+          .withSuccessHandler(displayDiagram)
+          .withFailureHandler((error) => {
+            console.error(error);
+            alert('Failed to generate diagram. Please check the PlantUML script and try again.');
+          })
+          .generatePlantUML(plantUMLScript);
+      }
+
+      function insertDiagram() {
+        const imgSrc = document.getElementById('plantuml-diagram').src;
+        google.script.run.insertPlantUML(imgSrc);
+      }
+
+      function editSelected() {
+        google.script.run
+          .withSuccessHandler((plantUMLScript) => {
+            if (plantUMLScript) {
+              document.getElementById('plantuml-script').value = plantUMLScript;
+            } else {
+              alert('No PlantUML image is selected or it does not have a valid URL.');
+            }
+          })
+          .getSelectedPlantUMLURL();
+      }
+
+    </script>
+  </body>
+</html>
