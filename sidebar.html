@@ -2,17 +2,17 @@
 <html>
   <head>
     <base target="_top">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://ssl.gstatic.com/docs/script/css/add-ons1.css">
   </head>
   <body>
     <h3>PlantUML xcronic</h3>
-    <textarea id="plantuml-script" placeholder="Enter PlantUML script" rows="10" cols="30" width="300" oninput="handleInputChanged()"></textarea>
+    <textarea id="plantumlScript" placeholder="Enter PlantUML script" rows="10" cols="30" width="300" oninput="handleInputChanged()"></textarea>
     <br />
     <input id="insertDiagramButton" class="button-30" type="button" value="Insert Diagram" onclick="insertDiagram()" disabled/>
     <input id="editSelectedButton" class="button-30" type="button" value="Edit Selected" onclick="editSelected()"/>
 
     <br />
-    <img id="plantuml-diagram" style="max-width:100%;" />
+    <img id="plantumlDiagram" style="max-width:100%;" />
 
     <script>
       let timeout = null;
@@ -24,17 +24,13 @@
         timeout = setTimeout(generateDiagram, 1000);
       }
 
-      // function updateDiagram(diagramUrl) {
-      //   document.getElementById('plantuml-diagram').src = diagramUrl;
-      // }
-
       function displayDiagram(imgSrc) {
-        document.getElementById('plantuml-diagram').src = imgSrc;
+        document.getElementById('plantumlDiagram').src = imgSrc;
         document.getElementById('insertDiagramButton').disabled = false;
       }
 
       function generateDiagram() {
-        const plantUMLScript = document.getElementById('plantuml-script').value;
+        const plantUMLScript = document.getElementById('plantumlScript').value;
         google.script.run
           .withSuccessHandler(displayDiagram)
           .withFailureHandler((error) => {
@@ -45,7 +41,7 @@
       }
 
       function insertDiagram() {
-        const imgSrc = document.getElementById('plantuml-diagram').src;
+        const imgSrc = document.getElementById('plantumlDiagram').src;
         google.script.run.insertPlantUML(imgSrc);
       }
 
@@ -53,7 +49,7 @@
         google.script.run
           .withSuccessHandler((plantUMLScript) => {
             if (plantUMLScript) {
-              document.getElementById('plantuml-script').value = plantUMLScript;
+              document.getElementById('plantumlScript').value = plantUMLScript;
             } else {
               alert('No PlantUML image is selected or it does not have a valid URL.');
             }
